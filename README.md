@@ -120,7 +120,7 @@ FIRST-TIME VISITOR
 ├─ Clicks REGISTER tab
 │
 REGISTRATION JOURNEY
-├─ 1. Enters Full Name
+├─ 1. Enter Full Name
 │   └─ Real-time feedback: "Name looks good ✓"
 │
 ├─ 2. Selects/slides Age
