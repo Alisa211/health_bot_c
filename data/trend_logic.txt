@@ -1,0 +1,55 @@
+acne:
+  improving = Fewer new pimples and less redness
+  worsening = More frequent breakouts or pain
+
+irregular_periods:
+  improving = Cycle becoming more regular
+  worsening = Longer gaps or heavier flow
+
+period_cramps:
+  improving = Pain shorter or milder
+  worsening = Increasing or spreading pain
+
+mood_swings:
+  improving = Fewer emotional dips
+  worsening = Longer or deeper lows
+
+stress:
+  improving = Stress score reducing
+  worsening = Stress staying high or rising
+
+sleep_problems:
+  improving = Falling asleep faster
+  worsening = More awakenings or daytime sleepiness
+
+irritability:
+  improving = Fewer anger episodes
+  worsening = More frequent outbursts
+
+anxiety:
+  improving = Fewer worry episodes
+  worsening = More panic or avoidance
+
+appetite_change:
+  improving = Appetite stabilizing
+  worsening = Extreme restriction or overeating
+
+weight_change:
+  improving = Weight stabilizing
+  worsening = Rapid continuous change
+
+fatigue:
+  improving = Energy slightly increasing
+  worsening = Constant exhaustion
+
+facial_hair:
+  improving = Slower hair growth
+  worsening = Faster or coarser hair
+
+nightfall:
+  improving = Neutral
+  worsening = Distress or discomfort
+
+genital_discomfort:
+  improving = Itching reducing
+  worsening = Pain, odor or discharge appearing

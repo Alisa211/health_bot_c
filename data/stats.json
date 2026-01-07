@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "maintainer": "StudentHealthAI",
+    "last_reviewed": "2026-01-01",
+    "review_cycle": "6 months",
+    "sources": [
+      "WHO Adolescent Health",
+      "CDC Youth Risk Behavior Surveillance",
+      "National Health Portal India",
+      "NFHS-5 India"
+    ]
+  },
+
+  "acne": {
+    "labels": ["Experience Acne", "Clear Skin"],
+    "values": [85, 15],
+    "source": "WHO & CDC adolescent dermatology",
+    "note": "Very common during puberty"
+  },
+
+  "irregular_periods": {
+    "labels": ["Irregular Cycles", "Regular Cycles"],
+    "values": [30, 70],
+    "source": "NHP India, WHO menstrual health",
+    "note": "Higher in first 2 years post-menarche"
+  },
+
+  "period_pain": {
+    "labels": ["Experience Cramps", "Minimal/No Pain"],
+    "values": [60, 40],
+    "source": "WHO reproductive health data",
+    "note": "Usually manageable with self-care"
+  },
+
+  "mood_swings": {
+    "labels": ["Notice Mood Swings", "Stable Mood"],
+    "values": [55, 45],
+    "source": "CDC adolescent emotional health",
+    "note": "Linked to hormonal shifts and stress"
+  },
+
+  "stress": {
+    "labels": ["Academic", "Family", "Social", "Other"],
+    "values": [50, 30, 10, 10],
+    "source": "WHO adolescent mental health",
+    "note": "Academic stress dominates globally"
+  },
+
+  "sleep_problems": {
+    "labels": ["Sleep Deprived", "Adequate Sleep"],
+    "values": [70, 30],
+    "source": "CDC Youth Risk Behavior Survey",
+    "note": "Teens need 8–10 hours"
+  },
+
+  "irritability": {
+    "labels": ["Often Irritable", "Usually Calm"],
+    "values": [40, 60],
+    "source": "WHO emotional wellbeing surveys",
+    "note": "Often stress or sleep related"
+  },
+
+  "anxiety": {
+    "labels": ["High Anxiety", "Low/Moderate"],
+    "values": [35, 65],
+    "source": "WHO & CDC mental health data",
+    "note": "Increases with academic pressure"
+  },
+
+  "appetite_change": {
+    "labels": ["Changed Appetite", "Normal Appetite"],
+    "values": [45, 55],
+    "source": "WHO stress & eating behavior",
+    "note": "Stress strongly affects hunger signals"
+  },
+
+  "weight_change": {
+    "labels": ["Weight Change", "Stable Weight"],
+    "values": [30, 70],
+    "source": "WHO nutrition & metabolism",
+    "note": "Sudden changes may indicate imbalance"
+  },
+
+  "fatigue": {
+    "labels": ["Frequent Fatigue", "Normal Energy"],
+    "values": [50, 50],
+    "source": "NFHS-5, WHO adolescent vitality",
+    "note": "Often linked to sleep or anemia"
+  },
+
+  "facial_hair": {
+    "labels": ["Noticeable Growth", "Normal Growth"],
+    "values": [20, 80],
+    "source": "WHO endocrine health",
+    "note": "Higher with PCOS or hormonal imbalance"
+  },
+
+  "nightfall": {
+    "labels": ["Experience Nightfall", "Rare/Never"],
+    "values": [90, 10],
+    "source": "WHO puberty development",
+    "note": "Normal male pubertal change"
+  },
+
+  "genital_itch": {
+    "labels": ["Non-infectious", "Infectious"],
+    "values": [75, 25],
+    "source": "CDC STI & hygiene guidelines",
+    "note": "Most cases are hygiene-related"
+  },
+
+  "discharge": {
+    "labels": ["Normal Discharge", "Abnormal Discharge"],
+    "values": [80, 20],
+    "source": "CDC reproductive health",
+    "note": "Color, smell, pain suggest infection"
+  }
+}

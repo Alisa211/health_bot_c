@@ -1,0 +1,29 @@
+acknowledgements:
+  normal = Thanks for sharing this — it’s okay to talk about these things.
+  brave = It takes courage to notice this and say something about it.
+  seen = I hear you — what you're feeling matters.
+  gentle = This makes sense given what you’re dealing with.
+
+green:
+  intro = This is actually very common, especially at your age.
+  reassure = You're not broken or doing anything wrong.
+  support = Small changes can make a real difference over time.
+
+yellow:
+  intro = This might be your body asking for a bit more care.
+  guide = It could help to talk to a doctor or counsellor about this.
+  support = Getting help is a strong thing to do, not a weak one.
+
+red:
+  intro = This sounds important and you deserve proper support for it.
+  urgent = Please try to talk to a healthcare professional as soon as you can.
+  care = You don't have to go through this alone.
+
+trend_improving = Looks like things are slowly getting better — that's a really good sign.
+trend_flat = Things seem steady right now. If this doesn't change, we can try something new.
+trend_worsening = This seems to be getting a bit heavier lately. It might help to slow down and get some support.
+
+micro_intro = Here's one tiny thing you could try today:
+micro_support = No pressure — even small steps count.
+
+closing = If you want, you can check back in later and tell me how it goes 💛

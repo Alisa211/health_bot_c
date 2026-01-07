@@ -1,0 +1,69 @@
+acne:
+  what = Blocked oil glands and dead skin cells causing pimples or cysts.
+  why = Hormonal changes increase oil production and clog pores.
+  red_flags = Painful deep cysts, scarring, no improvement after weeks.
+
+irregular_periods:
+  what = Menstrual cycles that are unpredictable in timing or flow.
+  why = Hormonal imbalance, stress, weight change or PCOS.
+  red_flags = No periods for 3 months, very heavy bleeding, severe pain.
+
+period_cramps:
+  what = Lower abdominal pain during menstruation.
+  why = Strong uterine contractions caused by prostaglandins.
+  red_flags = Pain stopping daily activity, worsening over time.
+
+mood_swings:
+  what = Rapid emotional changes like irritability or sadness.
+  why = Hormonal shifts, stress and poor sleep.
+  red_flags = Persistent low mood, thoughts of self harm.
+
+stress:
+  what = Mental and physical strain from pressure or overload.
+  why = Continuous activation of stress hormones like cortisol.
+  red_flags = Constant hopelessness, panic, inability to function.
+
+sleep_problems:
+  what = Difficulty falling asleep, staying asleep or feeling rested.
+  why = Screen exposure, stress, caffeine and irregular routine.
+  red_flags = Insomnia lasting weeks, daytime impairment.
+
+irritability:
+  what = Being easily annoyed or angered.
+  why = Stress, hunger, lack of sleep, emotional overload.
+  red_flags = Aggression, harming others, loss of control.
+
+anxiety:
+  what = Excessive worry or fear interfering with daily life.
+  why = Overactive stress and fear circuits in the brain.
+  red_flags = Panic attacks, avoidance, self harm thoughts.
+
+appetite_change:
+  what = Eating much less or more than usual.
+  why = Stress hormones and emotional states affecting hunger.
+  red_flags = Rapid weight change, bingeing or restricting.
+
+weight_change:
+  what = Noticeable gain or loss of body weight.
+  why = Metabolic, hormonal, lifestyle or emotional factors.
+  red_flags = Sudden unexplained change, weakness, palpitations.
+
+fatigue:
+  what = Persistent tiredness not relieved by rest.
+  why = Poor sleep, stress, anemia or illness.
+  red_flags = Breathlessness, pallor, long lasting exhaustion.
+
+facial_hair:
+  what = Unusual increase or decrease in facial hair growth.
+  why = Hormonal imbalance especially androgen levels.
+  red_flags = Sudden coarse hair with irregular periods.
+
+nightfall:
+  what = Involuntary ejaculation during sleep in males.
+  why = Normal hormonal activity during puberty.
+  red_flags = Pain, distress or infection signs.
+
+genital_discomfort:
+  what = Itching, burning or irritation in genital area.
+  why = Infection, irritation, allergy or hygiene issues.
+  red_flags = Pain, discharge, odor, sores or fever.

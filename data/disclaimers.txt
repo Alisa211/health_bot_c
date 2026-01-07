@@ -1,0 +1,9 @@
+medical = I'm not a doctor, but I can help you understand what's going on and when it might be a good idea to get help.
+
+emergency = If you're feeling unsafe, thinking about hurting yourself, or in danger right now, please contact your local emergency number or a trusted adult or healthcare provider immediately.
+
+mental_health = Big feelings can feel really heavy sometimes. If you ever feel overwhelmed or hopeless, talking to a counsellor or trusted person can really help.
+
+privacy = This space is meant to be safe and private. You don't have to share anything you're not comfortable with.
+
+not_alone = Whatever you're dealing with, you're not alone — and it's okay to ask for help.

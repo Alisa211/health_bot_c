@@ -1,0 +1,68 @@
+acne:
+  - Touching or picking the face often
+  - Using oily or heavy skincare or makeup
+  - High stress or poor sleep
+
+irregular_periods:
+  - Irregular sleep routine
+  - Sudden weight change or dieting
+  - High emotional stress
+
+period_cramps:
+  - Low physical activity
+  - Poor hydration
+  - High stress before periods
+
+mood_swings:
+  - Irregular sleep
+  - High caffeine or sugar intake
+  - Emotional overload
+
+stress:
+  - Too many tasks without breaks
+  - Long screen hours
+  - No physical movement
+
+sleep_problems:
+  - Phone use before bed
+  - Irregular bedtime
+  - Late caffeine
+
+irritability:
+  - Hunger or skipped meals
+  - Poor sleep
+  - Bottled up emotions
+
+anxiety:
+  - High uncertainty or pressure
+  - Excess caffeine
+  - Overthinking loops
+
+appetite_change:
+  - Emotional stress
+  - Skipping meals
+  - Irregular routine
+
+weight_change:
+  - Sudden routine change
+  - Emotional eating or restriction
+  - Reduced activity
+
+fatigue:
+  - Less than 7 hours sleep
+  - Dehydration
+  - Continuous mental effort
+
+facial_hair:
+  - Hormonal fluctuation
+  - Weight changes
+  - High stress
+
+nightfall:
+  - Puberty stage
+  - Normal hormonal development
+
+genital_discomfort:
+  - Tight or synthetic clothing
+  - Scented soaps or washes
+  - Poor drying after washing

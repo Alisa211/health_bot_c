@@ -1,0 +1,14 @@
+pimples acne zits -> acne
+missed period irregular cycle -> irregular_periods
+period pain cramps -> period_cramps
+mood swings emotional -> mood_swings
+stress pressure overwhelmed -> stress
+cant sleep insomnia -> sleep_problems
+angry irritated -> irritability
+worried anxious -> anxiety
+no appetite overeating -> appetite_change
+weight gain weight loss -> weight_change
+always tired fatigue -> fatigue
+facial hair moustache -> facial_hair
+nightfall wet dream -> nightfall
+itching discharge burning -> genital_discomfort

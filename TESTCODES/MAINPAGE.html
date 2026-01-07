@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is it normal? Student Health AI Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #334155; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Chart Container Utilities */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+
+        /* Interactive Element Styles */
+        .interactive-card { transition: all 0.3s ease; border-left: 4px solid transparent; }
+        .interactive-card:hover { transform: translateX(4px); border-left-color: #0EA5E9; }
+        
+        /* Symptom Pills */
+        .symptom-pill {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .symptom-pill:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .symptom-active {
+            ring: 2px solid #0EA5E9;
+            ring-offset: 2px;
+        }
+
+        /* Bot Simulation Chat Bubble */
+        .chat-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .bot-msg { background-color: #E0F2FE; color: #0369A1; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .user-msg { background-color: #F1F5F9; color: #334155; align-self: flex-end; border-bottom-right-radius: 2px; text-align: right; }
+        
+        /* Chart Bubble Specifics */
+        .chart-bubble {
+            background-color: white;
+            border: 1px solid #E2E8F0;
+            padding: 16px;
+            width: 100%;
+            max-width: 320px; /* Constrain chart width in chat */
+            align-self: flex-start;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Module Highlighting logic */
+        .module-active { background-color: #F0F9FF; color: #0369A1; font-weight: 700; border-left: 4px solid #0EA5E9; }
+        .module-inactive { color: #64748B; border-left: 4px solid transparent; }
+    </style>
+</head>
+<body class="antialiased selection:bg-sky-100 selection:text-sky-900 flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('dashboard', 'summary')">
+                    <span class="text-2xl text-sky-600">●</span>
+                    <h1 class="text-xl font-bold text-slate-800 tracking-tight">StudentHealth<span class="text-sky-600">AI</span> <span class="hidden sm:inline-block font-normal text-slate-400 text-sm ml-2">| Research Report</span></h1>
+                </div>
+                <div class="hidden md:flex space-x-1">
+                    <button onclick="navigateTo('dashboard', 'summary')" class="px-4 py-2 text-slate-600 hover:text-sky-600 transition-colors text-sm font-medium rounded-lg hover:bg-slate-50">Summary</button>
+                    <button onclick="navigateTo('dashboard', 'symptoms')" class="px-4 py-2 text-slate-600 hover:text-sky-600 transition-colors text-sm font-medium rounded-lg hover:bg-slate-50">Is it Normal?</button>
+                    <button onclick="navigateTo('dashboard', 'data')" class="px-4 py-2 text-slate-600 hover:text-sky-600 transition-colors text-sm font-medium rounded-lg hover:bg-slate-50">Data</button>
+                    <button onclick="navigateTo('simulation')" class="ml-4 px-5 py-2 bg-sky-600 text-white hover:bg-sky-700 transition-colors text-sm font-bold rounded-full shadow-sm">Try Bot Sim ↗</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-sky-600 p-2">
+                        <span class="text-xl">☰</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 p-4 shadow-lg absolute w-full z-50">
+            <div class="flex flex-col space-y-3">
+                <button onclick="navigateTo('dashboard', 'summary'); toggleMobileMenu()" class="text-left text-slate-600 font-medium">Summary</button>
+                <button onclick="navigateTo('dashboard', 'symptoms'); toggleMobileMenu()" class="text-left text-slate-600 font-medium">Common Symptoms</button>
+                <button onclick="navigateTo('dashboard', 'data'); toggleMobileMenu()" class="text-left text-slate-600 font-medium">Efficacy Data</button>
+                <button onclick="navigateTo('simulation'); toggleMobileMenu()" class="text-left font-bold text-sky-600">Try Bot Simulation</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main View: Dashboard Report -->
+    <main id="dashboard-view" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-20 transition-opacity duration-300">
+
+        <!-- Section 1: Executive Summary -->
+        <section id="summary" class="animate-fade-in-up">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <div class="inline-block px-3 py-1 bg-sky-50 text-sky-700 text-xs font-semibold uppercase tracking-wider rounded-full mb-4">WHO & CDC Guided Research</div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">Digital Guardians: <br>AI in Student Wellness</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    Analyzing the viability of automated agents in addressing the spectrum of student health—from <strong>mental stress</strong> to stigmatized <strong>physical changes</strong>. 
+                </p>
+                <div class="mt-8">
+                    <button onclick="navigateTo('simulation')" class="inline-flex items-center gap-2 px-6 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition font-semibold shadow-md">
+                        Launch Logic Simulator
+                        <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Key Metrics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                    <h3 class="text-sm font-medium text-slate-500 uppercase">Information Gap</h3>
+                    <p class="text-4xl font-bold text-slate-800 mt-2">68%</p>
+                    <p class="text-sm text-slate-600 mt-2">Of adolescents rely on social media for info on puberty, nightfall, and periods.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                    <h3 class="text-sm font-medium text-slate-500 uppercase">Mental Health</h3>
+                    <p class="text-4xl font-bold text-slate-800 mt-2">1 in 7</p>
+                    <p class="text-sm text-slate-600 mt-2">Adolescents experience a mental disorder globally (WHO).</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                    <h3 class="text-sm font-medium text-slate-500 uppercase">Bot Privacy</h3>
+                    <p class="text-4xl font-bold text-sky-600 mt-2">100%</p>
+                    <p class="text-sm text-slate-600 mt-2">Anonymous triage allows students to ask "embarrassing" questions without judgment.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Symptom Triage (Interactive Grid) -->
+        <section id="symptoms" class="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 md:p-12 scroll-mt-24">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">"Is This Normal?"</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">
+                    Students often struggle to distinguish between normal developmental changes and medical issues. 
+                    <br><strong>Click a symptom below</strong> to see how a Health Bot classifies and responds to common concerns.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Interactive Grid -->
+                <div class="lg:col-span-2">
+                    <div class="flex flex-wrap gap-3" id="symptom-grid">
+                        <!-- Pills generated by JS -->
+                    </div>
+                    <div class="mt-4 flex gap-4 text-xs text-slate-400 justify-end">
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-400"></span> Physical</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-purple-400"></span> Hormonal</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-400"></span> Mental/Emotional</span>
+                    </div>
+                </div>
+
+                <!-- Detail Card -->
+                <div class="lg:col-span-1">
+                    <div id="symptom-detail" class="bg-slate-50 border border-slate-200 rounded-xl p-6 h-full flex flex-col justify-center items-center text-center transition-all">
+                        <span class="text-4xl mb-4">👆</span>
+                        <h3 class="text-lg font-bold text-slate-700">Select a Symptom</h3>
+                        <p class="text-sm text-slate-500 mt-2">Click any tag on the left to view the Clinical Classification and Educational Fact.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Efficacy Data (Comparative) -->
+        <section id="data" class="scroll-mt-24">
+            <div class="bg-slate-900 rounded-3xl p-8 md:p-12 text-white">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-6">Why Bots Work</h2>
+                        <p class="text-slate-400 mb-8">
+                            Research indicates that while bots cannot replace doctors, they lower the barrier to entry for stigmatized topics (Genital health, Nightfall, Anxiety) due to perceived anonymity.
+                        </p>
+                        
+                        <div class="space-y-6">
+                            <!-- Stat 1 -->
+                            <div>
+                                <div class="flex justify-between items-end mb-2">
+                                    <span class="text-sm font-medium text-slate-300">Willingness to disclose (Sensitive Topics)</span>
+                                    <span class="text-xl font-bold text-sky-400">High</span>
+                                </div>
+                                <div class="w-full bg-slate-700 rounded-full h-2">
+                                    <div class="bg-sky-500 h-2 rounded-full" style="width: 85%"></div>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-1">Users often prefer AI over humans for initial "embarrassing" questions.</p>
+                            </div>
+
+                            <!-- Stat 2 -->
+                            <div>
+                                <div class="flex justify-between items-end mb-2">
+                                    <span class="text-sm font-medium text-slate-300">Accuracy of Triage (Clinical Validation)</span>
+                                    <span class="text-sm font-bold text-sky-400">82%</span>
+                                </div>
+                                <div class="w-full bg-slate-700 rounded-full h-2 relative">
+                                    <div class="bg-sky-500 h-2 rounded-full" style="width: 82%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Chart -->
+                    <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+                        <h3 class="text-center text-sm font-semibold text-slate-400 mb-4">Adolescent Anxiety Trends</h3>
+                        <div class="chart-container">
+                            <canvas id="trendsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Safety Framework -->
+        <section id="framework" class="scroll-mt-24 pb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-900">Safety & Trust Framework</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto mt-4">
+                    Ensuring students receive accurate, non-judgmental information.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Pillars -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-sky-400 transition-colors">
+                    <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center text-2xl mb-4">🔒</div>
+                    <h3 class="font-bold text-slate-800 mb-2">Data Privacy</h3>
+                    <p class="text-sm text-slate-600">No PII storage. Questions are anonymized.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-sky-400 transition-colors">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-2xl mb-4">🚨</div>
+                    <h3 class="font-bold text-slate-800 mb-2">Crisis Escalation</h3>
+                    <p class="text-sm text-slate-600">Keyword detection for self-harm triggers immediate help.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-sky-400 transition-colors">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-2xl mb-4">📚</div>
+                    <h3 class="font-bold text-slate-800 mb-2">Evidence-Based</h3>
+                    <p class="text-sm text-slate-600">Sourced from pediatric clinical guidelines.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-sky-400 transition-colors">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-2xl mb-4">🤝</div>
+                    <h3 class="font-bold text-slate-800 mb-2">Stigma Free</h3>
+                    <p class="text-sm text-slate-600">Validating and neutral language for all topics.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Secondary View: Interactive Simulation (Hidden by Default) -->
+    <main id="simulation-view" class="hidden flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 transition-opacity duration-300">
+        
+        <div class="mb-6 flex justify-between items-center flex-wrap gap-4">
+            <div>
+                <button onclick="navigateTo('dashboard', 'summary')" class="text-sm text-slate-500 hover:text-sky-600 font-medium mb-2">← Back to Research Report</button>
+                <h2 class="text-3xl font-bold text-slate-900">Bot Logic Simulator</h2>
+            </div>
+            <div class="text-right hidden sm:block">
+                 <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Environment</span>
+                 <p class="text-sm text-slate-600">Sandbox v6.0 (Integrated Data Visualization)</p>
+            </div>
+        </div>
+
+        <p class="max-w-3xl text-slate-600 mb-8">
+            This sandbox visualizes how the bot handles student concerns. Data visualizations will appear <strong>in the chat</strong> to visually reinforce the clinical information provided by the bot.
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Logic Trace -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Logic Trace Module -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100 sticky top-24">
+                    <h3 class="font-bold text-slate-800 mb-6 border-b border-slate-100 pb-2">Real-time Logic Trace</h3>
+                    <ul class="space-y-4">
+                        <li id="mod-nlp" class="flex items-center gap-3 text-sm p-3 rounded-lg transition-all duration-300 module-inactive">
+                            <span class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-xs font-bold">1</span>
+                            <div>
+                                <span class="block font-semibold">NLP Processing</span>
+                                <span class="text-xs opacity-75">Topic & Sentiment</span>
+                            </div>
+                        </li>
+                        <li id="mod-risk" class="flex items-center gap-3 text-sm p-3 rounded-lg transition-all duration-300 module-inactive">
+                            <span class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-xs font-bold">2</span>
+                            <div>
+                                <span class="block font-semibold">Risk Assessment</span>
+                                <span class="text-xs opacity-75">Triage (Normal vs. Alert)</span>
+                            </div>
+                        </li>
+                        <li id="mod-resp" class="flex items-center gap-3 text-sm p-3 rounded-lg transition-all duration-300 module-inactive">
+                            <span class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-xs font-bold">3</span>
+                            <div>
+                                <span class="block font-semibold">Clinical Protocol</span>
+                                <span class="text-xs opacity-75">Education / Advice</span>
+                            </div>
+                        </li>
+                        <li id="mod-route" class="flex items-center gap-3 text-sm p-3 rounded-lg transition-all duration-300 module-inactive">
+                            <span class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-xs font-bold">4</span>
+                            <div>
+                                <span class="block font-semibold">Resource Routing</span>
+                                <span class="text-xs opacity-75">Handover</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Interactive Chat Interface (Right Column) -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col h-[700px]">
+                    <!-- Header -->
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                            <div>
+                                <span class="block font-semibold text-slate-700 text-sm">StudentHealthBot_Demo</span>
+                                <span class="block text-xs text-slate-400">Always-on • Private</span>
+                            </div>
+                        </div>
+                        <button onclick="resetChat()" class="text-xs text-slate-500 hover:text-sky-600 font-medium px-3 py-1 border border-slate-200 rounded bg-white">Reset Session</button>
+                    </div>
+                    
+                    <!-- Chat Area -->
+                    <div id="chat-display" class="flex-1 p-6 overflow-y-auto flex flex-col gap-3 bg-white scroll-smooth">
+                        <!-- Dynamic Content Here -->
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="p-4 bg-slate-50 border-t border-slate-200">
+                        <!-- Quick Prompts -->
+                         <div class="mb-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">Simulate Student Query:</div>
+                        <div class="mb-3 flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                            <button onclick="simulateChat('acne')" class="whitespace-nowrap px-3 py-1.5 bg-white border border-rose-200 hover:border-rose-400 text-slate-600 hover:text-rose-600 rounded-full text-xs font-medium transition-colors">Acne/Breakouts</button>
+                            <button onclick="simulateChat('nightfall')" class="whitespace-nowrap px-3 py-1.5 bg-white border border-purple-200 hover:border-purple-400 text-slate-600 hover:text-purple-600 rounded-full text-xs font-medium transition-colors">Nightfall/Wet Dreams</button>
+                            <button onclick="simulateChat('periods')" class="whitespace-nowrap px-3 py-1.5 bg-white border border-purple-200 hover:border-purple-400 text-slate-600 hover:text-purple-600 rounded-full text-xs font-medium transition-colors">Period Pain</button>
+                            <button onclick="simulateChat('stress')" class="whitespace-nowrap px-3 py-1.5 bg-white border border-sky-200 hover:border-sky-400 text-slate-600 hover:text-sky-600 rounded-full text-xs font-medium transition-colors">Exam Stress</button>
+                            <button onclick="simulateChat('sleep')" class="whitespace-nowrap px-3 py-1.5 bg-white border border-sky-200 hover:border-sky-400 text-slate-600 hover:text-sky-600 rounded-full text-xs font-medium transition-colors">Insomnia</button>
+                            <button onclick="simulateChat('itch')" class="whitespace-nowrap px-3 py-1.5 bg-white border border-rose-200 hover:border-rose-400 text-slate-600 hover:text-rose-600 rounded-full text-xs font-medium transition-colors">Genital Itch</button>
+                        </div>
+                        
+                        <!-- Text Input -->
+                        <form onsubmit="handleUserSubmit(event)" class="relative">
+                            <input type="text" id="user-input" placeholder="Type a symptom (e.g., 'hair loss', 'can't sleep')..." class="w-full pl-4 pr-12 py-3 rounded-xl border border-slate-300 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-700 placeholder-slate-400 text-sm shadow-sm transition-all">
+                            <button type="submit" class="absolute right-2 top-2 p-1.5 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors">
+                                <span class="sr-only">Send</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-50 border-t border-slate-200 py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-xl font-bold text-slate-700 mb-4">StudentHealth<span class="text-sky-600">AI</span></h2>
+            <p class="text-sm text-slate-500 mb-6 max-w-md mx-auto">
+                Synthesized research based on WHO & CDC guidelines for Adolescent Health. <br>This tool is for educational purposes only.
+            </p>
+            <div class="text-xs text-slate-400">
+                &copy; 2025 Research Synthesis.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+<script>
+    // --- State Management ---
+    const appState = {
+        currentView: 'dashboard',
+        isMobileMenuOpen: false,
+        isSimulating: false
+    };
+
+    // LOGIN USER DATA (FROM loginpage.html)
+    const loggedInUser = {
+        name: localStorage.getItem("username") || "Student"
+    };
+
+    // Debug check (you can remove later)
+    console.log("Logged in user:", loggedInUser.name);
+
+
+        // --- Navigation Logic ---
+        function navigateTo(viewId, sectionId = null) {
+            const dashboard = document.getElementById('dashboard-view');
+            const simulation = document.getElementById('simulation-view');
+
+            if (viewId === 'dashboard') {
+                dashboard.classList.remove('hidden');
+                simulation.classList.add('hidden');
+                appState.currentView = 'dashboard';
+                
+                if (sectionId) {
+                    setTimeout(() => {
+                        const el = document.getElementById(sectionId);
+                        if (el) {
+                            const navHeight = 80;
+                            const elementPosition = el.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+                            window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                        }
+                    }, 50);
+                } else {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+
+            } else if (viewId === 'simulation') {
+                dashboard.classList.add('hidden');
+                simulation.classList.remove('hidden');
+                appState.currentView = 'simulation';
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                
+                if(document.getElementById('chat-display').children.length === 0) {
+                    resetChat();
+                }
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            appState.isMobileMenuOpen = !appState.isMobileMenuOpen;
+            if (appState.isMobileMenuOpen) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+
+        // --- Symptom Triage Logic (Grid Data) ---
+        const symptomData = [
+            { id: 'acne', label: 'Acne / Breakouts', category: 'Physical', color: 'bg-rose-100 text-rose-800 border-rose-200', type: 'Normal', fact: 'Up to 85% of teens get acne due to hormonal surges causing oil production. It is normal.' },
+            { id: 'fatigue', label: 'Constant Tiredness', category: 'Physical', color: 'bg-rose-100 text-rose-800 border-rose-200', type: 'Check', fact: 'Common, but if sleep is adequate and fatigue persists, check for iron deficiency or thyroid issues.' },
+            { id: 'weight', label: 'Weight Fluctuations', category: 'Physical', color: 'bg-rose-100 text-rose-800 border-rose-200', type: 'Monitor', fact: 'Rapid unplanned weight loss or gain can signal metabolic issues or eating disorders.' },
+            { id: 'nightfall', label: 'Nightfall / Wet Dreams', category: 'Hormonal', color: 'bg-purple-100 text-purple-800 border-purple-200', type: 'Normal', fact: 'Completely normal physiological response to flush old sperm. It signifies a healthy reproductive system.' },
+            { id: 'periods', label: 'Irregular Periods', category: 'Hormonal', color: 'bg-purple-100 text-purple-800 border-purple-200', type: 'Normal', fact: 'It often takes 2-3 years after menarche for cycles to become regular. Tracking is recommended.' },
+            { id: 'hair', label: 'Facial Hair Concerns', category: 'Hormonal', color: 'bg-purple-100 text-purple-800 border-purple-200', type: 'Normal', fact: 'Genetics largely dictate hair growth. Sudden increase in girls might indicate PCOS.' },
+            { id: 'itch', label: 'Genital Discomfort', category: 'Hormonal', color: 'bg-purple-100 text-purple-800 border-purple-200', type: 'Check', fact: 'Often caused by hygiene products or moisture, but persistent itching requires a doctor to rule out infection.' },
+            { id: 'stress', label: 'Exam Stress', category: 'Mental', color: 'bg-sky-100 text-sky-800 border-sky-200', type: 'Common', fact: 'Manageable with breaks and sleep. Becomes an issue if it causes panic attacks or blackout.' },
+            { id: 'mood', label: 'Mood Swings', category: 'Mental', color: 'bg-sky-100 text-sky-800 border-sky-200', type: 'Normal', fact: 'The teenage brain is remodeling. Emotions feel more intense due to limbic system development.' },
+            { id: 'sleep', label: 'Insomnia', category: 'Mental', color: 'bg-sky-100 text-sky-800 border-sky-200', type: 'Check', fact: 'Late-night screens suppress melatonin. Chronic lack of sleep affects mental health and grades.' },
+            { id: 'anxiety', label: 'Excessive Worry', category: 'Mental', color: 'bg-sky-100 text-sky-800 border-sky-200', type: 'Check', fact: 'If worry stops you from attending school or seeing friends, it may be an anxiety disorder.' },
+        ];
+
+        function initSymptomGrid() {
+            const grid = document.getElementById('symptom-grid');
+            grid.innerHTML = '';
+            symptomData.forEach(item => {
+                const pill = document.createElement('div');
+                pill.className = `symptom-pill px-4 py-2 rounded-full text-sm font-medium border ${item.color}`;
+                pill.textContent = item.label;
+                pill.onclick = () => showSymptomDetail(item, pill);
+                grid.appendChild(pill);
+            });
+        }
+
+        function showSymptomDetail(item, element) {
+            document.querySelectorAll('.symptom-pill').forEach(el => el.classList.remove('symptom-active'));
+            element.classList.add('symptom-active');
+            const card = document.getElementById('symptom-detail');
+            let badgeColor = 'bg-green-100 text-green-800';
+            if(item.type === 'Check' || item.type === 'Monitor') badgeColor = 'bg-yellow-100 text-yellow-800';
+            if(item.type === 'Alert') badgeColor = 'bg-red-100 text-red-800';
+
+            card.innerHTML = `
+                <div class="animate-fade-in text-left w-full">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-3xl">${getIcon(item.category)}</span>
+                        <span class="px-2 py-1 rounded text-xs font-bold uppercase tracking-wide ${badgeColor}">Triage: ${item.type}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">${item.label}</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">${item.fact}</p>
+                    <div class="text-xs text-slate-400 font-medium border-t border-slate-200 pt-3">
+                        Category: ${item.category} Health
+                    </div>
+                </div>
+            `;
+        }
+
+        function getIcon(cat) {
+            if(cat === 'Physical') return '🩹';
+            if(cat === 'Hormonal') return '🧬';
+            return '🧠';
+        }
+
+        // --- Chart Initialization (Dashboard) ---
+        let trendsChartInstance = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initSymptomGrid();
+            initTrendsChart();
+            resetChat(); 
+        });
+
+        function initTrendsChart() {
+            const ctx = document.getElementById('trendsChart').getContext('2d');
+            trendsChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2016', '2018', '2020', '2022', '2024'],
+                    datasets: [{
+                        label: 'Anxiety Reports (Indexed)',
+                        data: [19, 24, 31, 38, 42],
+                        borderColor: '#0EA5E9',
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // --- Chat Bubble Charts Logic ---
+        function addChartBubble(scenario) {
+            const chatDisplay = document.getElementById('chat-display');
+            const uniqueId = 'chart-' + Date.now();
+            
+            // Create Bubble Container
+            const bubble = document.createElement('div');
+            bubble.className = 'chart-bubble bot-msg';
+            
+            // Create Title
+            const title = document.createElement('div');
+            title.className = 'text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 flex justify-between items-center';
+            title.innerHTML = `<span>Contextual Data</span> <span class="bg-slate-100 px-1.5 rounded text-[10px]">Verify</span>`;
+            bubble.appendChild(title);
+
+            // Create Canvas Container
+            const container = document.createElement('div');
+            container.style.position = 'relative';
+            container.style.height = '180px';
+            container.style.width = '100%';
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = uniqueId;
+            container.appendChild(canvas);
+            bubble.appendChild(container);
+            
+            // Create Caption
+            const caption = document.createElement('p');
+            caption.className = 'text-xs text-slate-400 mt-2 text-center italic';
+            caption.id = uniqueId + '-caption';
+            bubble.appendChild(caption);
+
+            chatDisplay.appendChild(bubble);
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+
+            // Render Chart asynchronously to allow DOM paint
+            setTimeout(() => {
+                renderChatChart(uniqueId, scenario);
+            }, 50);
+        }
+
+        function renderChatChart(canvasId, scenario) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const captionEl = document.getElementById(canvasId + '-caption');
+            
+            let data = {};
+            let type = 'doughnut';
+            
+            if (scenario === 'acne') {
+                data = {
+                    labels: ['Experience Acne', 'Clear Skin'],
+                    datasets: [{ data: [85, 15], backgroundColor: ['#F43F5E', '#E2E8F0'], borderWidth: 0 }]
+                };
+                captionEl.textContent = "85% of teens experience acne. It is physiologically normal.";
+            } else if (scenario === 'stress') {
+                data = {
+                    labels: ['Academic', 'Family', 'Social', 'Other'],
+                    datasets: [{ data: [50, 30, 10, 10], backgroundColor: ['#0EA5E9', '#64748B', '#F59E0B', '#E2E8F0'], borderWidth: 0 }]
+                };
+                captionEl.textContent = "Academic pressure is the leading global student stressor.";
+            } else if (scenario === 'nightfall') {
+                data = {
+                    labels: ['Have Nightfall', 'Do Not'],
+                    datasets: [{ data: [90, 10], backgroundColor: ['#8B5CF6', '#E2E8F0'], borderWidth: 0 }]
+                };
+                captionEl.textContent = "Wet dreams signify a healthy, functioning reproductive system.";
+            } else if (scenario === 'sleep') {
+                data = {
+                    labels: ['Sleep < 7hrs', 'Sleep > 7hrs'],
+                    datasets: [{ data: [70, 30], backgroundColor: ['#F59E0B', '#10B981'], borderWidth: 0 }]
+                };
+                captionEl.textContent = "70% of students are sleep deprived, affecting mood.";
+            } else if (scenario === 'itch') {
+                data = {
+                    labels: ['Hygiene/Moisture', 'Infection'],
+                    datasets: [{ data: [75, 25], backgroundColor: ['#10B981', '#F43F5E'], borderWidth: 0 }]
+                };
+                captionEl.textContent = "Most genital discomfort is non-infectious (soap, fabric, sweat).";
+            } else {
+                // Default
+                data = {
+                    labels: ['Common', 'Rare'],
+                    datasets: [{ data: [90, 10], backgroundColor: ['#94A3B8', '#E2E8F0'], borderWidth: 0 }]
+                };
+                captionEl.textContent = "This is a very common student concern.";
+            }
+
+            new Chart(ctx, {
+                type: type,
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        // --- Interactivity: Chat Simulation ---
+        const chatDisplay = document.getElementById('chat-display');
+        const modules = {
+            nlp: document.getElementById('mod-nlp'),
+            risk: document.getElementById('mod-risk'),
+            resp: document.getElementById('mod-resp'),
+            route: document.getElementById('mod-route')
+        };
+
+        function resetChat() {
+            chatDisplay.innerHTML = `
+                <div class="chat-bubble bot-msg">
+                    Hi! I'm StudentHealthBot. This is a safe, private space. You can ask me about stress, sleep, physical changes (like acne or periods), or anything else on your mind.
+                </div>
+            `;
+            highlightModule(null); 
+            appState.isSimulating = false;
+        }
+
+        function addMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = `chat-bubble ${type === 'bot' ? 'bot-msg' : 'user-msg'}`;
+            div.textContent = text;
+            chatDisplay.appendChild(div);
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        }
+
+        function highlightModule(moduleId) {
+            Object.values(modules).forEach(el => {
+                el.className = "flex items-center gap-3 text-sm p-3 rounded-lg transition-all duration-300 module-inactive";
+            });
+            if (!moduleId) return;
+            const el = modules[moduleId];
+            el.className = "flex items-center gap-3 text-sm p-3 rounded-lg transition-all duration-300 module-active scale-105 shadow-sm bg-sky-50";
+        }
+
+        function handleUserSubmit(e) {
+            e.preventDefault();
+            if (appState.isSimulating) return;
+
+            const inputEl = document.getElementById('user-input');
+            const text = inputEl.value.trim();
+            if (!text) return;
+
+            inputEl.value = '';
+            
+            // NLP Keyword Matching
+            const lowerText = text.toLowerCase();
+            let scenario = 'general';
+            
+            if (lowerText.match(/stress|exam|fail|pressure|overwhelm/)) scenario = 'stress';
+            else if (lowerText.match(/sleep|insomnia|tired|awake/)) scenario = 'sleep';
+            else if (lowerText.match(/acne|pimple|skin|face|breakout/)) scenario = 'acne';
+            else if (lowerText.match(/period|blood|cramp|cycle|menstru/)) scenario = 'periods';
+            else if (lowerText.match(/nightfall|wet dream|ejacul|sperm/)) scenario = 'nightfall';
+            else if (lowerText.match(/itch|genital|privates|discharge|smell/)) scenario = 'itch';
+            else if (lowerText.match(/kill|suicid|die|hurt myself|unsafe/)) scenario = 'crisis';
+
+            simulateChat(scenario, text);
+        }
+
+        function simulateChat(scenario, customText = null) {
+            if (appState.isSimulating) return;
+            appState.isSimulating = true;
+
+            // 1. User Message Generation
+            let userText = customText;
+            if (!userText) {
+                switch(scenario) {
+                    case 'acne': userText = "I have terrible pimples on my face and I hate going to school."; break;
+                    case 'nightfall': userText = "I had a wet dream last night. Is something wrong with me?"; break;
+                    case 'periods': userText = "My period cramps are really bad today."; break;
+                    case 'stress': userText = "I'm overwhelmed with exams and family pressure."; break;
+                    case 'itch': userText = "I have some itching down there and I'm scared."; break;
+                    case 'sleep': userText = "I just lie awake at night staring at the ceiling."; break;
+                    default: userText = "I'm not feeling great.";
+                }
+            }
+            addMessage(userText, 'user');
+            
+            // 2. Simulation Loop
+            highlightModule('nlp');
+            
+            setTimeout(() => {
+                highlightModule('risk');
+                
+                setTimeout(() => {
+                    let botResponse = "";
+                    let nextModule = 'resp'; 
+
+                    switch(scenario) {
+                        case 'acne':
+                            botResponse = "I know acne can feel really frustrating, but let's check the facts. It's usually just oil and hormones, not dirt. Have you tried a gentle cleanser? If it's painful, a doctor can help.";
+                            break;
+                        case 'nightfall':
+                            botResponse = "Please don't worry. Nightfall (wet dreams) is completely normal and a sign your body is developing sexually as it should. It happens to almost everyone.";
+                            break;
+                        case 'periods':
+                            botResponse = "I'm sorry you're in pain. Period cramps are common, but they shouldn't stop your day. Heat pads and hydration help. If the pain is severe every month, it's worth checking with a doctor.";
+                            break;
+                        case 'itch':
+                            botResponse = "That sounds uncomfortable, but it's good you asked. Genital itching is often just due to moisture, soap, or tight clothes. Keep the area dry and clean. If it persists or you see a rash, a doctor should take a look.";
+                            break;
+                        case 'stress':
+                            botResponse = "It sounds like you're carrying a heavy load. Exam and family pressure is the #1 source of stress for students. On a scale of 1-10, how overwhelmed do you feel right now?";
+                            break;
+                        case 'sleep':
+                            botResponse = "Sleep issues are tough. Often, late-night phone use mimics daylight and suppresses melatonin. Would you be open to trying a 'digital sunset' 30 minutes before bed?";
+                            break;
+                        case 'crisis':
+                            botResponse = "I am hearing that you are in deep pain and feel unsafe. I want to support you.";
+                            nextModule = 'route';
+                            break;
+                        default:
+                            botResponse = "I hear you. Dealing with health changes can be confusing. Can you tell me a little more about what's going on? (You can ask about stress, body changes, or sleep)";
+                    }
+
+                    if (nextModule === 'route') {
+                         highlightModule('route');
+                         addMessage(botResponse, 'bot');
+                         setTimeout(() => {
+                            addMessage("Please contact the Crisis Line at 988 or text 'HOME' to 741741 immediately. I am routing you to a human counselor now.", 'bot');
+                            const div = document.createElement('div');
+                            div.className = "p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-bold text-center mt-2 animate-pulse";
+                            div.innerHTML = "⚠️ CRISIS PROTOCOL ACTIVATED";
+                            chatDisplay.appendChild(div);
+                            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+                            appState.isSimulating = false;
+                         }, 1200);
+                    } else {
+                        highlightModule('resp');
+                        addMessage(botResponse, 'bot');
+                        
+                        // DELAY CHART for "Sequential" effect
+                        setTimeout(() => {
+                            if (scenario !== 'periods' && scenario !== 'general') { // Skip charts for some topics if no data
+                                addChartBubble(scenario);
+                            }
+                            appState.isSimulating = false;
+                        }, 600);
+                    }
+                    
+                }, 800);
+            }, 800);
+        }
+    </script>
+</body>
+</html>

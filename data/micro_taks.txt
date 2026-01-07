@@ -1,0 +1,55 @@
+acne:
+  - Change your pillowcase tonight
+  - Avoid touching your face for 2 hours
+
+irregular_periods:
+  - Note today as cycle day 1
+  - Eat one proper meal with protein
+
+period_cramps:
+  - Use a warm bottle on your abdomen
+  - Take a 5 minute slow walk
+
+mood_swings:
+  - Write one thing that went okay today
+  - Take 3 slow breaths
+
+stress:
+  - Stretch your arms for 30 seconds
+  - Drink one glass of water
+
+sleep_problems:
+  - Put your phone away for 10 minutes
+  - Dim the lights in your room
+
+irritability:
+  - Eat something small
+  - Step away for 2 minutes
+
+anxiety:
+  - Name 3 things you can see
+  - Feel your feet on the floor
+
+appetite_change:
+  - Eat one simple snack or meal
+  - Drink water before your next meal
+
+weight_change:
+  - Take a 5 minute walk
+  - Choose one balanced meal today
+
+fatigue:
+  - Drink water now
+  - Sit near sunlight for 2 minutes
+
+facial_hair:
+  - Note when you last noticed change
+  - Consider booking a doctor visit
+
+nightfall:
+  - Remind yourself this is normal
+  - Maintain hygiene
+
+genital_discomfort:
+  - Switch to cotton underwear today
+  - Avoid soap in that area for now
