@@ -114,6 +114,93 @@ experience designed for students.
 This section explains how a first-time user interacts with the system,
 from landing on the page to long-term usage.
 
+FIRST-TIME VISITOR
+├─ Lands on page
+├─ Sees: "Is It Normal? Health Bot - Welcome, Student!"
+├─ Sees three tabs: LOGIN | REGISTER | ABOUT
+├─ Clicks REGISTER tab
+│
+REGISTRATION JOURNEY
+├─ 1. Enter Full Name
+│   └─ Real-time feedback: "Name looks good ✓"
+│
+├─ 2. Selects/slides Age
+│   ├─ If Age < 18 → Shows disclaimer
+│   └─ Real-time feedback: "Age confirmed ✓"
+│
+├─ 3. Selects Blood Group
+│   └─ Dropdown easy to use
+│
+├─ 4. Adds Medical Conditions (optional)
+│   └─ Character counter shows: "45/200"
+│
+├─ 5. Enters Email
+│   ├─ Real-time check: "Email available ✓"
+│   └─ If email exists: "Email already registered. Try logging in →"
+│
+├─ 6. Reviews Privacy Statement
+│   └─ Reads: "Your information is confidential..."
+│
+├─ 7. Checks Terms & Conditions
+│   └─ Clicks through to terms
+│
+├─ 8. Clicks "Register Now"
+│   ├─ Page shows loading spinner
+│   └─ Backend processes registration
+│
+REGISTRATION SUCCESS
+├─ Page shows: "✓ Registration Successful!"
+├─ Displays generated password
+│   ├─ Shows as: ••••••••••••
+│   ├─ "Show" button reveals it once
+│   └─ "Copy" button copies to clipboard
+│
+├─ Warning: "⚠️ Save this password securely"
+├─ Message: "We sent your password to your email"
+├─ Option: "📥 Download Credentials (PDF)"
+├─ Button: "Complete & Go to Dashboard"
+│
+│ OR
+│ 
+├─ Clicks "Back to Login"
+│
+FIRST LOGIN
+├─ Clicks LOGIN tab
+├─ Enters email
+├─ Enters password (from email or notes)
+├─ Checks "Remember me" (optional)
+├─ Clicks "Login"
+│   ├─ Backend verifies email + password
+│   └─ Creates session
+│
+├─ Redirected to Health AI Bot Dashboard
+├─ Dashboard shows:
+│   ├─ "Welcome back, [First Name]!"
+│   ├─ Quick links: "Ask a symptom", "View resources"
+│   └─ Privacy message: "Your health data is confidential"
+│
+ONGOING USAGE
+├─ User asks: "Is it normal to have acne?"
+├─ Bot responds with:
+│   ├─ "87% of teenagers develop acne"
+│   ├─ Explanation of hormones
+│   ├─ What's normal
+│   ├─ When to see a doctor
+│   └─ Management strategies
+│
+├─ User feels reassured
+├─ Returns for more questions
+└─ Data personalizes over time
+
+RETURNS DAYS LATER
+├─ Clicks "Login"
+├─ Email auto-fills (from browser)
+├─ Enters password
+├─ "Remember me" checkbox keeps them logged in
+├─ Seamless dashboard access
+└─ Continues using bot for health guidance
+
+🔄 User Journey & Flow
 ### First-Time Visitor Flow
 ┌─────────────────────────────────────┐
 │  Lands on Page                      │
